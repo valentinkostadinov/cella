@@ -1,0 +1,21 @@
+#grid {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: rgb(45, 45, 45);
+}
+#controls {
+	position: absolute;
+	color: rgb(190, 190, 190);
+	top: 0px;
+	left: 0px;
+	margin: 10px;
+}
+#status {
+	position: absolute;
+	color: rgb(190, 190, 190);
+	top: 0px;
+	right: 0px;
+	margin: 10px;
+	text-align: right;
+}

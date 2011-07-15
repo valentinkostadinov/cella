@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script type="text/javascript" src="main.js"></script>
+		<script type="text/javascript" src="Grid.js"></script>
+		<script type="text/javascript" src="BitBlock.js"></script>
+		<script type="text/javascript" src="Automaton.js"></script>
+		<script type="text/javascript" src="AutomatonManager.js"></script>
+		<title>Cellular Automaton</title>
+	</head>
+	<body onload="onLoad()">
+		<canvas id="grid">
+		</canvas>
+		<div id="controls">
+			<button id="nextgen"  title='Next Generation [G]'>Next Gen</button>
+			<button id="nextstep"  title='Next Step [S]'>Next Step</button>
+			<button id="run" title='Play [Space]'>||></button>
+			<br>
+			Speed
+			<button id="speeddown" title='Speed Down [Ctrl-Left]'>-</button>
+			<input id="speedslider" type="range"/>
+			<button id="speedup" title='Speed Up [Ctrl-Right]'>+</button>
+			<br>
+			<button id="recenter" title='Recenter [C]'>Recenter</button>
+			<button id="fitpattern" title='Fit Pattern [F]'>Fit Pattern</button>
+			<br>
+			<button id="newpattern" title='New Pattern [N]'>New Pattern</button>
+			<button id="reset"  title='Reset Pattern [R]'>Reset Pattern</button>
+			<br>
+			<span title="Toggle Grid Lines [L]">
+				<input type=checkbox id="gridlines" >
+				<span>Grid Lines</span>
+			</span>
+			<span title="Toggle Auto-Fit [A]">
+				<input type=checkbox id="autofit">
+				<span>Auto-Fit</span>
+			</span>
+			<br>
+			Zoom
+			<button id="zoomout" title='Zoom Out [Ctrl-Down]'>-</button>
+			<input id="zoomslider" type="range"/>
+			<button id="zoomin" title='Zoom In [Ctrl-Up]'>+</button>
+		</div>
+		<div id="status">
+			<table summary="status">
+				<tr>
+					<td>scale</td>
+					<td id="scale"></td>
+				</tr>
+				<tr>
+					<td id="speedtag"></td>
+					<td id="speed"></td>
+				</tr>
+				<tr>
+					<td>population</td>
+					<td id="population"></td>
+				</tr>
+				<tr>
+					<td>generation</td>
+					<td id="generation"></td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>
