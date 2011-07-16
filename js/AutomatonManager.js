@@ -13,6 +13,7 @@ var AutomatonManager = {
 
 	paused: true,
 	pattern: null,
+	timer: null,
 
 	listeners: [],
 
@@ -32,6 +33,22 @@ var AutomatonManager = {
 			this.stateChanged();
 		}
 	},
+	
+	halt: function() {
+		clearTimeout(this.timer);
+		this.paused = true;
+		this.stateChanged();
+	},
+
+	reset: function() {
+		this.halt();
+		Automaton.clear();
+		if (this.pattern) {
+			Automaton.addPattern(this.pattern);
+			Grid.fitPattern();
+			Grid.paint();
+		}
+	},
 
 	run: function() {
 		AutomatonManager.tick();
@@ -40,12 +57,12 @@ var AutomatonManager = {
 	tick: function() {
 		Automaton.step(this.getSteps());
 
-		if (Automaton.size == 0) {
+		if (Automaton.size == 0 || (Automaton.births == 0 && Automaton.deaths == 0)) {
 			this.paused = true;
 			this.stateChanged();
 		}
 		if (!this.paused) {
-			setTimeout(this.run, this.getSleep());
+			this.timer = setTimeout(this.run, this.getSleep());
 		}
 	},
 
@@ -76,7 +93,7 @@ var AutomatonManager = {
 	speedUp: function() {
 		if (this.speed < this.MAX_SPEED) {
 			this.speed++;
-			this.stateChanged();	
+			this.stateChanged();
 		}
 	},
 
@@ -86,7 +103,7 @@ var AutomatonManager = {
 			this.stateChanged();
 		}
 	},
-	
+
 	addListener: function(listener) {
 		this.listeners.push(listener);
 	},

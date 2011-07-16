@@ -6,9 +6,9 @@ var Grid = {
 	 * scale > 0: pixels/cell
 	 * scale < -1: cells/pixel
 	 */
-	scale: 16,
+	DEFAULT_SCALE: 16,
 	MAX_SCALE: 32, // must be > 0
-	MIN_SCALE: -48, // must be < -1
+	MIN_SCALE: -32, // must be < -1
 	MIN_SCALE_WITH_GRID: 3,
 	SCREEN_FIT_RATIO: 0.9,
 
@@ -38,6 +38,8 @@ var Grid = {
 
 	init: function(canvas) {
 		var me = this;
+
+		me.scale = Grid.DEFAULT_SCALE,
 
 		me.canvas = canvas;
 		me.context = canvas.getContext("2d");
@@ -181,8 +183,11 @@ var Grid = {
 		return this.scale > 0 ? ("1:" + this.scale) : (-this.scale + ":1");
 	},
 
-	getZoom: function() {
-		return this.scale > 0 ? this.scale - this.MIN_SCALE - 2 : this.scale - this.MIN_SCALE;
+	getZoom: function(scale) {
+		if (!scale) { // treat 0 as undefined/null
+			scale = this.scale;
+		}
+		return scale > 0 ? scale - this.MIN_SCALE - 2 : scale - this.MIN_SCALE;
 	},
 
 	curZoomPos: {

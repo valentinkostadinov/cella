@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Cella - cellular automata engine</title>
+
+		<!-- jQuery -->
+		<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css">
+		<script type="text/javascript" src="js/jquery-1.5.1.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.8.14.custom.min.js"></script>
+
+		<!-- Cella engine code-->
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script type="text/javascript" src="js/Main.js"></script>
+		<script type="text/javascript" src="js/Grid.js"></script>
+		<script type="text/javascript" src="js/BitBlock.js"></script>
+		<script type="text/javascript" src="js/Automaton.js"></script>
+		<script type="text/javascript" src="js/AutomatonManager.js"></script>
+
+		<script type="text/javascript">$(document).ready(onReady);</script>
+	</head>
+
+	<body>
+		<canvas id="grid">
+		</canvas>
+
+		<div id="controls" >
+			<div>
+				<button id="newpattern"></button>
+
+				<span id="rungroup">
+					<button id="reset"></button>
+					<button id="play"></button>
+					<button id="nextstep"></button>
+					<button id="nextgen"></button>
+				</span>
+
+				<span id="fitgroup">
+					<input id="autofit" type="checkbox" />
+					<label for="autofit">auto-fit</label>
+					<button id="fitpattern"></button>
+				</span>
+
+				<input id="gridlines" type="checkbox" />
+				<label for="gridlines">grid</label>
+			</div>
+
+			<div>
+				<span id="speedgroup">
+					<button id="speed" style="width: 4em"></button>
+					<button id="slower"></button>
+					<button id="faster"></button>
+				</span>
+				<div id="speedslider">
+				</div>
+			</div>
+
+			<div>
+				<span id="zoomgroup">
+					<button id="scale" style="width: 4em"></button>
+					<button id="zoomout"></button>
+					<button id="zoomin"></button>
+				</span>
+				<div id="zoomslider">
+				</div>
+			</div>
+		</div>
+
+		<div id="status">
+			<table summary="status">
+				<tr>
+					<td>population</td>
+					<td id="population"></td>
+				</tr>
+				<tr>
+					<td>generation</td>
+					<td id="generation"></td>
+				</tr>
+			</table>
+		</div>
+
+	</body>
+
+</html>
