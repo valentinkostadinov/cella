@@ -3,13 +3,45 @@
 var AutomatonManager = {
 
 	/*
-	 * speed < 0: delay[-speed] ms/step
-	 * speed > 0: 2^speed gens/step
+	 * speed > 0: gens/step
+	 * speed <= 0: delay ms/gen
 	 */
 	speed: -2,
-	MAX_SPEED: 5, // 2^5 = 32 gens/step
+	DEFAULT_SPEED: -2,
+	MAX_SPEED: 24,
 	MIN_SPEED: -4,
-	delay: [, 50, 125, 250, 500],
+	delay: [25, 50, 100, 200, 400],
+
+	getSpeedString: function() {
+		return this.speed > 0 ? ("x" + this.getSteps()) : ("1/" + this.getSleep() + 'ms');
+	},
+
+	getSleep: function() {
+		 return this.speed > 0 ? 1 : this.delay[-this.speed];
+	},
+
+	getSteps: function() {
+		return this.speed > 0 ? this.speed : 1;
+	},
+
+	setSpeed: function(speed) {
+		this.speed = Math.max(this.MIN_SPEED, Math.min(this.MAX_SPEED, speed));
+		this.stateChanged();
+	},
+
+	speedUp: function() {
+		if (this.speed < this.MAX_SPEED) {
+			this.speed++;
+			this.stateChanged();
+		}
+	},
+
+	speedDown: function() {
+		if (this.speed > this.MIN_SPEED) {
+			this.speed--;
+			this.stateChanged();
+		}
+	},
 
 	paused: true,
 	pattern: null,
@@ -75,33 +107,6 @@ var AutomatonManager = {
 			this.stateChanged();
 		}
 		Automaton.step(steps);
-	},
-
-	getSleep: function() {
-		return this.speed < 0 ? this.delay[-this.speed] : 1;
-	},
-
-	getSteps: function() {
-		return this.speed < 0 ? 1 : (1 << this.speed);
-	},
-
-	setSpeed: function(speed) {
-		this.speed = Math.max(this.MIN_SPEED, Math.min(this.MAX_SPEED, speed));
-		this.stateChanged();
-	},
-
-	speedUp: function() {
-		if (this.speed < this.MAX_SPEED) {
-			this.speed++;
-			this.stateChanged();
-		}
-	},
-
-	speedDown: function() {
-		if (this.speed > this.MIN_SPEED) {
-			this.speed--;
-			this.stateChanged();
-		}
 	},
 
 	addListener: function(listener) {

@@ -1,12 +1,44 @@
 "use strict";
 
 function onReady() {
+	// prevent selection
+	document.onselectstart= function() {
+		return false;
+	}
+
 	Grid.init(grid);
 
-	$("#rungroup").buttonset();
+	$("#newpattern").button({
+		text: false,
+		label: "New Pattern [N]",
+		icons: {
+			primary: "ui-icon-document"
+		},
+	})
+	.click( function() {
+		AutomatonManager.halt();
+		Automaton.clear();
+		Grid.setZoom(Grid.getZoom(Grid.DEFAULT_SCALE), true);
+		Grid.recenter();
+		AutomatonManager.pattern = null;
+	});
+
+	$("#reset").button({
+		text: false,
+		label: "Reset Pattern [R]",
+		icons: {
+			primary: "ui-icon-arrowreturnthick-1-w",
+		},
+	})
+	.click( function() {
+		AutomatonManager.reset();
+		Grid.fitPattern(true);
+		Grid.paint();
+	});
+
 	$("#play").button({
 		text: false,
-		label: "play [space]",
+		label: "Play [Space]",
 		icons: {
 			primary: "ui-icon-play",
 		},
@@ -15,32 +47,9 @@ function onReady() {
 		AutomatonManager.toggle();
 	});
 
-	AutomatonManager.addListener({
-		stateChanged: function() {
-			var options;
-			if (AutomatonManager.paused) {
-				options = {
-					label: "play [space]",
-					icons: {
-						primary: "ui-icon-play"
-					},
-				};
-			} else {
-				options = {
-					label: "pause [space]",
-					icons: {
-						primary: "ui-icon-pause"
-					}
-				};
-			}
-			$("#play").button("option", options);
-		}
-
-	});
-
 	$("#nextgen").button({
 		text: false,
-		label: "next generation [G]",
+		label: "Next Generation [G]",
 		icons: {
 			primary: "ui-icon-arrow-1-e",
 		},
@@ -51,7 +60,7 @@ function onReady() {
 
 	$("#nextstep").button({
 		text: false,
-		label: "next step [S]",
+		label: "Next n-th Generation [S]",
 		icons: {
 			primary: "ui-icon-arrowthick-1-e",
 		},
@@ -60,35 +69,23 @@ function onReady() {
 		AutomatonManager.step();
 	});
 
-	$("#reset").button({
+	$("#rungroup").buttonset();
+
+	gridlines.checked = Grid.visibleGridLines;
+	$("#gridlines").button({
 		text: false,
-		label: "reset [R]",
+		label: "Toggle Grid Lines [L]",
 		icons: {
-			primary: "ui-icon-arrowreturnthick-1-w",
+			primary: "ui-icon-calculator"
 		},
 	})
 	.click( function() {
-		AutomatonManager.reset();
+		Grid.toggleGridLines();
 	});
 
-	$("#newpattern").button({
-		text: false,
-		label: "new pattern [N]",
-		icons: {
-			primary: "ui-icon-document"
-		},
-	})
-	.click( function() {
-		AutomatonManager.halt();
-		Automaton.clear();
-		Grid.recenter();
-		AutomatonManager.pattern = null;
-	});
-
-	$("#fitgroup").buttonset();
 	$("#fitpattern").button({
 		text: false,
-		label: "fit pattern now [F]",
+		label: "Fit Pattern To Window [F]",
 		icons: {
 			primary: "ui-icon-arrow-4-diag"
 		},
@@ -98,25 +95,21 @@ function onReady() {
 		Grid.paint();
 	});
 
-	gridlines.checked = Grid.visibleGridLines;
-	gridlines.labels[0].title = "toggle grid lines [L]";
-	$("#gridlines").button({
-	})
-	.click( function() {
-		Grid.toggleGridLines();
-	});
-
 	autofit.checked = Grid.autoFit;
-	autofit.labels[0].title = "toggle auto-fit [A]";
 	$("#autofit").button({
+		text: false,
+		label: "Toggle Auto-Fit [A]",
+		icons: {
+			primary: "ui-icon-check"
+		},
 	})
 	.click( function() {
 		Grid.toggleAutoFit();
 	});
+	$("#fitgroup").buttonset();
 
 	$("#zoomgroup").buttonset();
 	$("#zoomslider").slider({
-		orientation: 'vertical',
 		min: 0,
 		max: Grid.getMaxZoom(),
 		value: Grid.getZoom(),
@@ -125,17 +118,18 @@ function onReady() {
 		},
 
 	});
-	scale.title = "scale (click to reset)";
+	scale.title = "Scale [click to reset]";
+	$("#scale").css("width", "5em");
 	$("#scale").button({
 		label: Grid.getScaleString(),
 	})
-	.click(function() {
-		Grid.setZoom(Grid.getZoom(Grid.DEFAULT_SCALE));
-		Grid.recenter();
+	.click( function() {
+		Grid.setZoom(Grid.getZoom(Grid.DEFAULT_SCALE), true);
 	});
+
 	$("#zoomin").button({
 		text: false,
-		label: "zoom in [ctrl-up]",
+		label: "Zoom In [Ctrl-Up]",
 		icons: {
 			primary: "ui-icon-zoomin"
 		},
@@ -146,7 +140,7 @@ function onReady() {
 
 	$("#zoomout").button({
 		text: false,
-		label: "zoom out [ctrl-down]",
+		label: "Zoom Out [Ctrl-Down]",
 		icons: {
 			primary: "ui-icon-zoomout"
 		},
@@ -155,21 +149,16 @@ function onReady() {
 		Grid.zoom(-1);
 	});
 
-	var getSpeedTag = function() {
-		return AutomatonManager.speed < 0 ? "delay" : "steps";
-	};
-
-	var getSpeedVal = function() {
-		return AutomatonManager.speed < 0 ? (AutomatonManager.getSleep() + 'ms') : AutomatonManager.getSteps();
-	};
-
 	$("#speedgroup").buttonset();
-	speed.title = "speed (click to reset)";
+	speed.title = "Speed [click to reset]";
+	$("#speed").css("width", "6em");
 	$("#speed").button({
-		label: getSpeedVal(),
+		label: AutomatonManager.getSpeedString(),
+	})
+	.click(function() {
+		AutomatonManager.setSpeed(AutomatonManager.DEFAULT_SPEED);
 	});
 	$("#speedslider").slider({
-		orientation: "vertical",
 		min: AutomatonManager.MIN_SPEED,
 		max: AutomatonManager.MAX_SPEED,
 		value: AutomatonManager.speed,
@@ -180,7 +169,7 @@ function onReady() {
 	});
 	$("#slower").button({
 		text: false,
-		label: "slower [ctrl-left]",
+		label: "Slower [Ctrl-Left]",
 		icons: {
 			primary: "ui-icon-minus"
 		},
@@ -191,7 +180,7 @@ function onReady() {
 
 	$("#faster").button({
 		text: false,
-		label: "faster [ctrl-right]",
+		label: "Faster [Ctrl-Right]",
 		icons: {
 			primary: "ui-icon-plus"
 		},
@@ -199,6 +188,10 @@ function onReady() {
 	.click( function() {
 		AutomatonManager.speedUp();
 	});
+
+	// TODO
+	// population.innerText = Automaton.size;
+	// generation.innerText = Automaton.generation;
 
 	// listeners
 	Grid.addListener({
@@ -214,22 +207,36 @@ function onReady() {
 	AutomatonManager.addListener({
 		stateChanged: function() {
 			$("#speedslider").slider("value", AutomatonManager.speed);
-			$("#speed").button("option", "label", getSpeedVal());
+			$("#speed").button("option", "label", AutomatonManager.getSpeedString());
+			var options;
+			if (AutomatonManager.paused) {
+				options = {
+					label: "Play [Space]",
+					icons: {
+						primary: "ui-icon-play"
+					},
+				};
+			} else {
+				options = {
+					label: "Pause [Space]",
+					icons: {
+						primary: "ui-icon-pause"
+					}
+				};
+			}
+			$("#play").button("option", options);
 		}
 
 	});
 
 	Automaton.addListener({
 		stateChanged: function() {
-			population.innerText = Automaton.size;
-			generation.innerText = Automaton.generation;
+			// TODO
+			// population.innerText = Automaton.size;
+			// generation.innerText = Automaton.generation;
 		}
 
 	});
-
-	// status
-	population.innerText = Automaton.size;
-	generation.innerText = Automaton.generation;
 
 	// keyboard setup
 	(function() {

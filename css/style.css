@@ -1,24 +1,16 @@
-body {
-	font-size: 62.5%;
-}
-
 #grid {
 	position: absolute;
 	top: 0px;
 	left: 0px;
 	background-color: rgb(45, 45, 45);
-	z-index: -10;
+	z-index: -100;
 }
 
-#controls {
-	position: absolute;
+#toolbar>div {
+	font-size: 70.5%;
+	float: left;
 }
 
-#status {
-	position: absolute;
-	top: 0px;
-	right: 0px;
-	margin: 10px;
-	text-align: right;
-	color: rgb(190, 190, 190);
+#stats {
+	float: right;
 }

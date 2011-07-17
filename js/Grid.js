@@ -34,7 +34,7 @@ var Grid = {
 	},
 
 	visibleGridLines: true,
-	autoFit: false,
+	autoFit: true,
 
 	init: function(canvas) {
 		var me = this;
@@ -199,7 +199,7 @@ var Grid = {
 		y: null
 	},
 	zoomAt: null,
-	setZoom: function(zoom, x, y) {
+	setZoom: function(zoom, x, y, dontChangeAutoFit) {
 		// normalize
 		zoom = Math.max(0, Math.min(this.getMaxZoom(), zoom));
 		if (zoom - this.getZoom() == 0) {
@@ -238,7 +238,9 @@ var Grid = {
 		this.curZoomPos.y = y;
 		this.curCenter = this.getCenter();
 
-		this.autoFit = false;
+		if (!dontChangeAutoFit) {
+			this.autoFit = false;
+		}
 		this.stateChanged();
 		this.paint();
 	},
@@ -351,7 +353,6 @@ var Grid = {
 	recenter: function() {
 		this.offset.x = 0;
 		this.offset.y = 0;
-		this.autoFit = false;
 		this.stateChanged();
 		this.paint();
 	},
