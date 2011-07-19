@@ -6,14 +6,18 @@ var AutomatonManager = {
 	 * speed > 0: gens/step
 	 * speed <= 0: delay ms/gen
 	 */
-	speed: -2,
-	DEFAULT_SPEED: -2,
+	speed: -1,
+	DEFAULT_SPEED: -1,
 	MAX_SPEED: 24,
 	MIN_SPEED: -4,
-	delay: [25, 50, 100, 200, 400],
+	delay: [50, 100, 250, 500, 1000],
 
 	getSpeedString: function() {
-		return this.speed > 0 ? ("x" + this.getSteps()) : ("1/" + this.getSleep() + 'ms');
+		if (this.speed > 0) {
+			return "x" + this.getSteps(); 
+		} else {
+			return "~" + (1000/this.getSleep()) + 'Hz';
+		};
 	},
 
 	getSleep: function() {

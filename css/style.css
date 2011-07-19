@@ -1,16 +1,33 @@
+body {
+	font-size: 62.5%;
+}
+
 #grid {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	background-color: rgb(45, 45, 45);
-	z-index: -100;
+	z-index: -10;
+	background-color: rgb(40, 40, 40 );
+}
+
+#speed, #scale {
+	width: 5em;
 }
 
 #toolbar>div {
-	font-size: 70.5%;
+	opacity: .9;
 	float: left;
 }
 
 #stats {
 	float: right;
+}
+
+#stats>span {
+	float: right;
+	clear: right;
+	text-align: right;
+	padding: .4em .8em;
+	color: #cccccc;
+	cursor: default;
 }

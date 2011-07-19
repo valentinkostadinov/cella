@@ -8,6 +8,14 @@ function onReady() {
 
 	Grid.init(grid);
 
+	$("#help").button({
+		text: false,
+		label: "Help [H]",
+		icons: {
+			primary: "ui-icon-help"
+		}
+	});
+
 	$("#newpattern").button({
 		text: false,
 		label: "New Pattern [N]",
@@ -119,7 +127,6 @@ function onReady() {
 
 	});
 	scale.title = "Scale [click to reset]";
-	$("#scale").css("width", "5em");
 	$("#scale").button({
 		label: Grid.getScaleString(),
 	})
@@ -151,7 +158,6 @@ function onReady() {
 
 	$("#speedgroup").buttonset();
 	speed.title = "Speed [click to reset]";
-	$("#speed").css("width", "6em");
 	$("#speed").button({
 		label: AutomatonManager.getSpeedString(),
 	})
@@ -189,9 +195,16 @@ function onReady() {
 		AutomatonManager.speedUp();
 	});
 
-	// TODO
-	// population.innerText = Automaton.size;
-	// generation.innerText = Automaton.generation;
+	population.innerText = Automaton.size;
+	generation.innerText = Automaton.generation;
+
+	Automaton.addListener({
+		stateChanged: function() {
+			population.innerText = Automaton.size;
+			generation.innerText = Automaton.generation;
+		}
+
+	});
 
 	// listeners
 	Grid.addListener({
@@ -225,15 +238,6 @@ function onReady() {
 				};
 			}
 			$("#play").button("option", options);
-		}
-
-	});
-
-	Automaton.addListener({
-		stateChanged: function() {
-			// TODO
-			// population.innerText = Automaton.size;
-			// generation.innerText = Automaton.generation;
 		}
 
 	});

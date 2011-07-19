@@ -26,6 +26,7 @@
 
 		<div id="toolbar">
 			<div>
+				<button id="help"></button>
 				<button id="newpattern"></button>
 				<span id="rungroup">
 					<button id="reset"></button>
@@ -49,9 +50,9 @@
 				<input id="gridlines" type="checkbox" />
 				<label for="gridlines"></label>
 				<span id="fitgroup">
+					<button id="fitpattern"></button>
 					<input id="autofit" type="checkbox" />
 					<label for="autofit"></label>
-					<button id="fitpattern"></button>
 				</span>
 			</div>
 
@@ -67,8 +68,9 @@
 
 		</div>
 
-		<div id="stats" class="ui-widget-header">
-			12
+		<div id="stats" class="ui-widget">
+			<span id="population" title="Population"></span>
+			<span id="generation" title="Generation"></span>
 		</div>
 
 	</body>
