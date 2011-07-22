@@ -2,16 +2,27 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Cella - cellular automata engine</title>
+		<title>Cella - Cellular Automata Engine</title>
 
 		<!-- jQuery -->
-		<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css">
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
+
+		<!-- JQueryUI -->
+		<link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.all.css">
+		<script type="text/javascript" src="js/ui/jquery.ui.core.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.widget.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.mouse.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.position.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.dialog.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.button.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.slider.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.menu.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.popup.js"></script>
 
 		<!-- Cella engine code-->
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<script type="text/javascript" src="js/Main.js"></script>
+		<script type="text/javascript" src="js/Rule.js"></script>
 		<script type="text/javascript" src="js/Grid.js"></script>
 		<script type="text/javascript" src="js/BitBlock.js"></script>
 		<script type="text/javascript" src="js/Automaton.js"></script>
@@ -37,11 +48,9 @@
 			</div>
 
 			<div>
-				<span id="speedgroup">
-					<button id="speed"></button>
-					<button id="slower"></button>
-					<button id="faster"></button>
-				</span>
+				<button id="speed"></button>
+				<button id="slower"></button>
+				<button id="faster"></button>
 				<div id="speedslider">
 				</div>
 			</div>
@@ -57,20 +66,50 @@
 			</div>
 
 			<div>
-				<span id="zoomgroup">
-					<button id="scale"></button>
-					<button id="zoomout"></button>
-					<button id="zoomin"></button>
-				</span>
+				<button id="scale"></button>
+				<button id="zoomout"></button>
+				<button id="zoomin"></button>
 				<div id="zoomslider">
 				</div>
 			</div>
 
+			<div>
+				<button id="rule"></button>
+				<button id="ruleselect"></button>
+				<ul id="rulelist">
+				</ul>
+			</div>
+
 		</div>
 
-		<div id="stats" class="ui-widget">
+		<div id="stats">
 			<span id="population" title="Population"></span>
 			<span id="generation" title="Generation"></span>
+		</div>
+
+		<div id="helpdialog" title="Cella Help">
+			<dl>
+				<dt>Introduction</dt>
+				<dd>
+					Cella is an engine for playing with cellular automata (CA). The most well known CA is
+					<a href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life" target="_blank">Conway's Game of Life</a>.
+				</dd>
+				<dt>Grid Navigation</dt>
+				<dd>Pan the grid by dragging the mouse or use the keyboard arrows.</dd>
+				<dt>Cell Editing</dt>
+				<dd>Right-click to toggle a cell. Right-click and drag to toggle multiple cells.</dd>
+				<dt>More</dt>
+				<dd>Hover over the toolbar buttons for tooltips on keyboard shortcuts.</dd>
+				<dt>Credits</dt>
+				<dd>
+					Inspired by
+					<a href="http://golly.sourceforge.net/" target="_blank">Golly</a>.
+				</dd>
+				<dd>
+					Written by
+					<a href="mailto:valentin.kostadinov@gmail.com">Valentin Kostadinov</a>.
+				</dd>
+			</dl>
 		</div>
 
 	</body>

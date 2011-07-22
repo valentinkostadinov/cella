@@ -6,7 +6,7 @@ var Grid = {
 	 * scale > 0: pixels/cell
 	 * scale < -1: cells/pixel
 	 */
-	DEFAULT_SCALE: 16,
+	DEFAULT_SCALE: 14,
 	MAX_SCALE: 32, // must be > 0
 	MIN_SCALE: -32, // must be < -1
 	MIN_SCALE_WITH_GRID: 3,

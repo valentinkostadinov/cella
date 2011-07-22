@@ -8,12 +8,22 @@ function onReady() {
 
 	Grid.init(grid);
 
+	$("#helpdialog").dialog({
+		autoOpen: false,
+		modal: true,
+		draggable: false,
+		resizable: false,
+		width: "450",
+	});
 	$("#help").button({
 		text: false,
 		label: "Help [H]",
 		icons: {
 			primary: "ui-icon-help"
 		}
+	})
+	.click( function() {
+		$("#helpdialog").dialog("open");
 	});
 
 	$("#newpattern").button({
@@ -114,9 +124,18 @@ function onReady() {
 	.click( function() {
 		Grid.toggleAutoFit();
 	});
+
 	$("#fitgroup").buttonset();
 
-	$("#zoomgroup").buttonset();
+	scale.title = "Scale [click to reset]";
+	$("#scale").button({
+		label: Grid.getScaleString(),
+	})
+	.click( function() {
+		Grid.setZoom(Grid.getZoom(Grid.DEFAULT_SCALE), true);
+	});
+
+	$("#zoomin").parent().buttonset();
 	$("#zoomslider").slider({
 		min: 0,
 		max: Grid.getMaxZoom(),
@@ -126,14 +145,6 @@ function onReady() {
 		},
 
 	});
-	scale.title = "Scale [click to reset]";
-	$("#scale").button({
-		label: Grid.getScaleString(),
-	})
-	.click( function() {
-		Grid.setZoom(Grid.getZoom(Grid.DEFAULT_SCALE), true);
-	});
-
 	$("#zoomin").button({
 		text: false,
 		label: "Zoom In [Ctrl-Up]",
@@ -156,23 +167,16 @@ function onReady() {
 		Grid.zoom(-1);
 	});
 
-	$("#speedgroup").buttonset();
+	// speed
+	$("#speed").parent().buttonset();
 	speed.title = "Speed [click to reset]";
 	$("#speed").button({
 		label: AutomatonManager.getSpeedString(),
 	})
-	.click(function() {
+	.click( function() {
 		AutomatonManager.setSpeed(AutomatonManager.DEFAULT_SPEED);
 	});
-	$("#speedslider").slider({
-		min: AutomatonManager.MIN_SPEED,
-		max: AutomatonManager.MAX_SPEED,
-		value: AutomatonManager.speed,
-		slide: function(event, ui) {
-			AutomatonManager.setSpeed(ui.value);
-		}
 
-	});
 	$("#slower").button({
 		text: false,
 		label: "Slower [Ctrl-Left]",
@@ -188,16 +192,55 @@ function onReady() {
 		text: false,
 		label: "Faster [Ctrl-Right]",
 		icons: {
-			primary: "ui-icon-plus"
+			primary: "ui-icon-plus",
 		},
 	})
 	.click( function() {
 		AutomatonManager.speedUp();
+	})
+
+	$("#speedslider").slider({
+		min: AutomatonManager.MIN_SPEED,
+		max: AutomatonManager.MAX_SPEED,
+		value: AutomatonManager.speed,
+		slide: function(event, ui) {
+			AutomatonManager.setSpeed(ui.value);
+		}
+
+	});
+
+	rule.title = "Rule (click to edit)";
+	$("#rule").button({
+		label: Rules.list[0].toString(),
+	});
+
+	Rules.list.forEach( function(r) {
+		$("#rulelist").append(
+		"<li><a href='#" + r.name + "'>" + r.toString() + "</a></li>"
+		);
+	});
+
+	$("#ruleselect").button({
+		text: false,
+		label: "Select A Rule",
+		icons: {
+			primary: "ui-icon-triangle-1-s"
+		}
+	}).next().menu({
+		select: function(e, ui) {
+			$("#rule").button("option", "label", ui.item.text());
+			Rules.g = ui;
+		},
+
+	}
+	).popup().parent().buttonset({
+		items: "button",
 	});
 
 	population.innerText = Automaton.size;
 	generation.innerText = Automaton.generation;
 
+	// listeners
 	Automaton.addListener({
 		stateChanged: function() {
 			population.innerText = Automaton.size;
@@ -206,7 +249,6 @@ function onReady() {
 
 	});
 
-	// listeners
 	Grid.addListener({
 		stateChanged: function() {
 			autofit.checked = Grid.autoFit;
@@ -254,6 +296,7 @@ function onReady() {
 			A: 65,
 			F: 70,
 			G: 71,
+			H: 72,
 			L: 76,
 			N: 78,
 			R: 82,
@@ -263,10 +306,16 @@ function onReady() {
 		var velocity = (Grid.scale > 0 ? Grid.scale : 1);
 		var accelaration = 1.5;
 
-		document.onkeydown = function(event) {
+		$(document).keydown( function(event) {
+			if (!(event.target instanceof HTMLBodyElement)) {
+				return;
+			}
 			var delta = Math.floor(velocity += accelaration);
 			if (!event.ctrlKey) {
 				switch (event.which) {
+					case KEY.H:
+						help.click();
+						break;
 					case KEY.N:
 						newpattern.click();
 						break;
@@ -321,11 +370,11 @@ function onReady() {
 						break;
 				}
 			};
-		};
+		});
 
-		document.onkeyup = function() {
+		$(document).keyup( function() {
 			velocity = Grid.scale > 0 ? Grid.scale : 1;
-		};
+		});
 
 	})();
 

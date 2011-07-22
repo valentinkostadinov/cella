@@ -1,5 +1,5 @@
 body {
-	font-size: 62.5%;
+	font-size: 65%;
 }
 
 #grid {
@@ -7,15 +7,20 @@ body {
 	top: 0px;
 	left: 0px;
 	z-index: -10;
-	background-color: rgb(40, 40, 40 );
+/*	background-color: rgb(40, 40, 40);*/
+	background-color: rgb(40, 40, 40);
 }
 
 #speed, #scale {
 	width: 5em;
 }
 
+#speedslider, #zoomslider {
+	margin-right: -.3em;
+}
+
 #toolbar>div {
-	opacity: .9;
+	opacity: .8;
 	float: left;
 }
 
@@ -27,7 +32,14 @@ body {
 	float: right;
 	clear: right;
 	text-align: right;
-	padding: .4em .8em;
-	color: #cccccc;
+	padding: .2em .8em;
+	color: #d0d0d0;
 	cursor: default;
+	font-size: 1.3em;
+	font-family: Consolas, Courier;
+}
+
+#helpdialog dt {
+	font-weight: bold;
+	margin-top: 1em;
 }
