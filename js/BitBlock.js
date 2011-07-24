@@ -188,7 +188,9 @@ var lookup0x0888 = new Array(0xFFFF + 1);
 var lookup0xE000 = new Array(0xFFFF + 1);
 var lookup0x1110 = new Array(0xFFFF + 1);
 
-(function() {
+setTransformRule(Automaton.rule);
+
+function setTransformRule(rule) {
 	function generateLookup(lookup, bits, neighbors) {
 		var mask = 0;
 		for (var i  = 0; i < bits.length; i++) {
@@ -203,11 +205,11 @@ var lookup0x1110 = new Array(0xFFFF + 1);
 
 				var bitCount = bitCounts[from & neighborhood];
 				if ((from & bit) == bit) {
-					if (bitCount != 2 && bitCount != 3) {
+					if (!rule.survives(bitCount)) {
 						to ^= bit;
 					}
 				} else {
-					if (bitCount == 3) {
+					if (rule.born(bitCount)) {
 						to ^= bit;
 					}
 				}
@@ -224,4 +226,4 @@ var lookup0x1110 = new Array(0xFFFF + 1);
 	generateLookup(lookup0x0888, [0x0008, 0x0080, 0x0800], [0x22F5, 0x0D5D, 0xD5D0]);
 	generateLookup(lookup0xE000, [0x2000, 0x4000, 0x8000], [0x5707, 0xAE0E, 0x4CDC]);
 	generateLookup(lookup0x1110, [0x0010, 0x0100, 0x1000], [0x0BAB, 0xBAB0, 0xAF44]);
-})();
+};

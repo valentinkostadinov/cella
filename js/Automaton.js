@@ -5,6 +5,8 @@ var Automaton = {
 	// Position.hash() -> BitBlock
 	map: [],
 
+	rule: Rules.Life,
+
 	disposables: [],
 	newNonEmpty: [],
 
@@ -14,6 +16,11 @@ var Automaton = {
 	generation: 0,
 
 	listeners: [],
+
+	setRule: function(rule) {
+		this.rule = rule;
+		setTransformRule(rule);
+	},
 
 	render: function(cellRenderer) {
 		for (var key in this.map) {

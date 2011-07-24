@@ -6,7 +6,7 @@ var AutomatonManager = {
 	 * speed > 0: gens/step
 	 * speed <= 0: delay ms/gen
 	 */
-	speed: -1,
+	speed: 0,
 	DEFAULT_SPEED: -1,
 	MAX_SPEED: 24,
 	MIN_SPEED: -4,

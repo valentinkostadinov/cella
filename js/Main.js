@@ -6,7 +6,7 @@ function onReady() {
 		return false;
 	}
 
-	Grid.init(grid);
+	Grid.init(document.getElementById("grid"));
 
 	$("#helpdialog").dialog({
 		autoOpen: false,
@@ -89,7 +89,7 @@ function onReady() {
 
 	$("#rungroup").buttonset();
 
-	gridlines.checked = Grid.visibleGridLines;
+	$("#gridlines")[0].checked = Grid.visibleGridLines;
 	$("#gridlines").button({
 		text: false,
 		label: "Toggle Grid Lines [L]",
@@ -113,7 +113,7 @@ function onReady() {
 		Grid.paint();
 	});
 
-	autofit.checked = Grid.autoFit;
+	$("#autofit")[0].checked = Grid.autoFit;
 	$("#autofit").button({
 		text: false,
 		label: "Toggle Auto-Fit [A]",
@@ -122,12 +122,12 @@ function onReady() {
 		},
 	})
 	.click( function() {
-		Grid.toggleAutoFit();
+		Grid.autoFit = !Grid.autoFit;
 	});
 
 	$("#fitgroup").buttonset();
 
-	scale.title = "Scale [click to reset]";
+	$("#scale")[0].title = "Scale [click to reset]";
 	$("#scale").button({
 		label: Grid.getScaleString(),
 	})
@@ -168,8 +168,8 @@ function onReady() {
 	});
 
 	// speed
+	$("#speed")[0].title = "Speed [click to reset]";
 	$("#speed").parent().buttonset();
-	speed.title = "Speed [click to reset]";
 	$("#speed").button({
 		label: AutomatonManager.getSpeedString(),
 	})
@@ -209,49 +209,55 @@ function onReady() {
 
 	});
 
-	rule.title = "Rule (click to edit)";
-	$("#rule").button({
-		label: Rules.list[0].toString(),
-	});
-
-	Rules.list.forEach( function(r) {
+	Rules.list.forEach( function(r, index) {
 		$("#rulelist").append(
-		"<li><a href='#" + r.name + "'>" + r.toString() + "</a></li>"
+		"<li><a href='#' " +
+		"rule-index='" + index + "' " +
+		">" + r.toString() + "</a></li>"
 		);
 	});
 
+	$("#rule")[0].title = "Automaton Rule (click to edit)";
+	$("#rule").button({
+		label: Automaton.rule.toString(),
+	});
 	$("#ruleselect").button({
 		text: false,
 		label: "Select A Rule",
 		icons: {
-			primary: "ui-icon-triangle-1-s"
-		}
-	}).next().menu({
+			primary: "ui-icon-triangle-1-s",
+		},
+	})
+	$("#rulelist").menu({
 		select: function(e, ui) {
 			$("#rule").button("option", "label", ui.item.text());
-			Rules.g = ui;
+			var ruleIndex = ui.item.children(0).attr("rule-index");
+			Automaton.setRule(Rules.list[ruleIndex]);
+			document.activeElement.blur();
 		},
 
-	}
-	).popup().parent().buttonset({
+	})
+	.popup().parent().buttonset({
 		items: "button",
 	});
 
-	population.innerText = Automaton.size;
-	generation.innerText = Automaton.generation;
+	var population = $("#population")[0];
+	var generation = $("#generation")[0];
+	var updateStats = function() {
+		population.innerHTML = Automaton.size;
+		generation.innerHTML = Automaton.generation;
+	};
+
+	updateStats();
 
 	// listeners
 	Automaton.addListener({
-		stateChanged: function() {
-			population.innerText = Automaton.size;
-			generation.innerText = Automaton.generation;
-		}
-
+		stateChanged: updateStats
 	});
 
 	Grid.addListener({
 		stateChanged: function() {
-			autofit.checked = Grid.autoFit;
+			$("#autofit")[0].checked = Grid.autoFit;
 			$("#autofit").button("refresh");
 			$("#zoomslider").slider("value", Grid.getZoom());
 			$("#scale").button("option", "label", Grid.getScaleString());
@@ -288,11 +294,11 @@ function onReady() {
 	(function() {
 		var KEY = {
 			CTRL: 17,
-			RIGHT: 39,
-			UP: 38,
-			LEFT: 37,
-			DOWN: 40,
 			SPACE: 32,
+			LEFT: 37,
+			UP: 38,
+			RIGHT: 39,
+			DOWN: 40,
 			A: 65,
 			F: 70,
 			G: 71,
@@ -307,47 +313,44 @@ function onReady() {
 		var accelaration = 1.5;
 
 		$(document).keydown( function(event) {
-			if (!(event.target instanceof HTMLBodyElement)) {
-				return;
-			}
 			var delta = Math.floor(velocity += accelaration);
 			if (!event.ctrlKey) {
 				switch (event.which) {
 					case KEY.H:
-						help.click();
+						$("#help").click();
 						break;
 					case KEY.N:
-						newpattern.click();
+						$("#newpattern").click();
 						break;
 					case KEY.SPACE:
-						play.click();
+						$("#play").click();
 						break;
 					case KEY.S:
-						nextstep.click();
+						$("#nextstep").click();
 						break;
 					case KEY.G:
-						nextgen.click();
+						$("#nextgen").click();
+						break;
+					case KEY.L:
+						$("#gridlines").click();
+						break;
+					case KEY.A:
+						$("#autofit").click();
+						break;
+					case KEY.F:
+						$("#fitpattern").click();
+						break;
+					case KEY.R:
+						$("#reset").click();
 						break;
 					case KEY.LEFT:
 						Grid.pan(delta, 0);
 						break;
-					case KEY.L:
-						gridlines.click();
-						break;
-					case KEY.A:
-						autofit.click();
-						break;
-					case KEY.F:
-						fitpattern.click();
-						break;
-					case KEY.R:
-						reset.click();
+					case KEY.RIGHT:
+						Grid.pan(-delta, 0);
 						break;
 					case KEY.UP:
 						Grid.pan(0, delta);
-						break;
-					case KEY.RIGHT:
-						Grid.pan(-delta, 0);
 						break;
 					case KEY.DOWN:
 						Grid.pan(0, -delta);

@@ -66,6 +66,7 @@ function parseDigits(digits) {
 }
 
 var Rules = {
+	Life: parseRule("Life", "23/3"),
 	list: [
 	parseRule("Life", "23/3"),
 	parseRule("Gnarl", "B1/S1"),

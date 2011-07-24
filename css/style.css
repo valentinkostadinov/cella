@@ -1,5 +1,5 @@
 body {
-	font-size: 65%;
+	font-size: 62.5%;
 }
 
 #grid {
@@ -7,7 +7,6 @@ body {
 	top: 0px;
 	left: 0px;
 	z-index: -10;
-/*	background-color: rgb(40, 40, 40);*/
 	background-color: rgb(40, 40, 40);
 }
 
@@ -20,7 +19,7 @@ body {
 }
 
 #toolbar>div {
-	opacity: .8;
+	opacity: .9;
 	float: left;
 }
 

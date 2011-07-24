@@ -55,14 +55,14 @@ var Grid = {
 		});
 
 		// resizing setup
-		window.onresize = function() {
+		$(window).resize( function() {
 			me.width = me.canvas.width = window.innerWidth;
 			me.height = me.canvas.height = window.innerHeight;
 			if (me.autoFit) {
 				me.fitPattern(true);
 			}
 			me.paint();
-		};
+		});
 
 		// prevent context menu
 		me.canvas.oncontextmenu = function() {
@@ -70,21 +70,23 @@ var Grid = {
 		};
 
 		// zooming setup
-		canvas.onmousewheel = function(event) {
-			me.zoom(event.wheelDelta > 0 ? 1 : -1, event.x, event.y);
-		};
+		$(document).mousewheel( function(event, delta) {
+			me.zoom(delta > 0 ? 1 : -1, event.pageX, event.pageY);
+		});
 
 		// mouse panning and cell toggle setup
 		(function() {
+			var dragButton;
 			var panOrigin, panOffset;
 			var lastPos, toggleState;
 
-			me.canvas.onmousedown = function(event) {
+			$(canvas).mousedown( function(event) {
+				dragButton = event.button;
 				switch (event.button) {
 					case 0:
 						panOrigin = {
-							x: event.x,
-							y: event.y
+							x: event.pageX,
+							y: event.pageY,
 						};
 						panOffset = {
 							x: 0,
@@ -97,25 +99,26 @@ var Grid = {
 						toggleState = null;
 						break;
 				}
-				// prevent selection
-				event.preventDefault();
-			};
+			});
 
-			me.canvas.onmousemove = function(event) {
-				var p = me.toGridXY(event.x, event.y);
-				switch (event.button) {
+			$(canvas).mousemove( function(event) {
+				if (dragButton == null) {
+					return;
+				}
+				var p = me.toGridXY(event.pageX, event.pageY);
+				switch (dragButton) {
 					case 0:
 						if (panOrigin) {
-							me.pan(event.x - panOrigin.x - panOffset.x, event.y - panOrigin.y - panOffset.y);
+							me.pan(event.pageX - panOrigin.x - panOffset.x, event.pageY - panOrigin.y - panOffset.y);
 							panOffset = {
-								x: event.x - panOrigin.x,
-								y: event.y - panOrigin.y
+								x: event.pageX - panOrigin.x,
+								y: event.pageY - panOrigin.y
 							};
 						};
 						break;
 					case 2:
 						if (me.scale > 0) {
-							var pos = me.toGridXY(event.x, event.y);
+							var pos = me.toGridXY(event.pageX, event.pageY);
 							if (!lastPos || pos.x != lastPos.x || pos.y != lastPos.y) {
 								lastPos = pos;
 								if (toggleState == null) {
@@ -126,16 +129,17 @@ var Grid = {
 						};
 						break;
 				}
-			};
+			});
 
-			me.canvas.onmouseup = function(event) {
+			$(canvas).mouseup( function(event) {
+				dragButton = null;
 				switch (event.button) {
 					case 0:
 						panOrigin = null;
 						break;
 					case 2:
 						if (me.scale > 0 && toggleState == null) {
-							var pos = me.toGridXY(event.x, event.y);
+							var pos = me.toGridXY(event.pageX, event.pageY);
 							toggleState = !Automaton.isSet(pos);
 							Automaton.set(pos, toggleState);
 						}
@@ -143,9 +147,9 @@ var Grid = {
 				}
 				// restore cursor
 				event.target.style.cursor = 'default';
-			};
+			});
 
-			me.canvas.ondblclick = function(event) {
+			$(canvas).dblclick( function(event) {
 				var scaleDelta;
 				if (me.scale > 0) {
 					scaleDelta = Math.min(2 * me.scale, me.MAX_SCALE - me.scale);
@@ -154,12 +158,13 @@ var Grid = {
 				}
 				var smoothZoom = function() {
 					if (scaleDelta-- > 0) {
-						Grid.zoom(1, event.x, event.y);
+						Grid.zoom(1, event.pageX, event.pageY);
 						setTimeout(smoothZoom, 10);
 					}
 				};
+
 				smoothZoom();
-			};
+			});
 
 		})();
 
