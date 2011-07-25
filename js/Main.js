@@ -13,44 +13,46 @@ function onReady() {
 		modal: true,
 		draggable: false,
 		resizable: false,
-		width: "450",
+		width: "400",
 	});
 	$("#help").button({
 		text: false,
 		label: "Help [H]",
 		icons: {
-			primary: "ui-icon-help"
+			primary: "ui-icon-info"
 		}
 	})
 	.click( function() {
 		$("#helpdialog").dialog("open");
 	});
 
-	$("#newpattern").button({
+	$("#clear").button({
 		text: false,
-		label: "New Pattern [N]",
+		label: "Clear Grid [C]",
 		icons: {
 			primary: "ui-icon-document"
 		},
 	})
 	.click( function() {
 		AutomatonManager.halt();
+		if (!AutomatonManager.pattern) {
+			AutomatonManager.pattern = Automaton.toPattern();
+		}
 		Automaton.clear();
 		Grid.setZoom(Grid.getZoom(Grid.DEFAULT_SCALE), true);
 		Grid.recenter();
-		AutomatonManager.pattern = null;
 	});
 
 	$("#reset").button({
 		text: false,
-		label: "Reset Pattern [R]",
+		label: "Reset To Last Edit [R]",
 		icons: {
 			primary: "ui-icon-arrowreturnthick-1-w",
 		},
 	})
 	.click( function() {
 		AutomatonManager.reset();
-		Grid.fitPattern(true);
+		Grid.fitPattern();
 		Grid.paint();
 	});
 
@@ -76,9 +78,13 @@ function onReady() {
 		AutomatonManager.step(1);
 	});
 
+	var getNextStepLabel = function() {
+		return "Step Over " + AutomatonManager.getSteps() + " Generation(s) [S]";
+	}
+
 	$("#nextstep").button({
 		text: false,
-		label: "Next n-th Generation [S]",
+		label: getNextStepLabel(),
 		icons: {
 			primary: "ui-icon-arrowthick-1-e",
 		},
@@ -269,6 +275,7 @@ function onReady() {
 		stateChanged: function() {
 			$("#speedslider").slider("value", AutomatonManager.speed);
 			$("#speed").button("option", "label", AutomatonManager.getSpeedString());
+			$("#nextstep").button("option", "label", getNextStepLabel());
 			var options;
 			if (AutomatonManager.paused) {
 				options = {
@@ -300,11 +307,11 @@ function onReady() {
 			RIGHT: 39,
 			DOWN: 40,
 			A: 65,
+			C: 67,
 			F: 70,
 			G: 71,
 			H: 72,
 			L: 76,
-			N: 78,
 			R: 82,
 			S: 83,
 		};
@@ -319,8 +326,8 @@ function onReady() {
 					case KEY.H:
 						$("#help").click();
 						break;
-					case KEY.N:
-						$("#newpattern").click();
+					case KEY.C:
+						$("#clear").click();
 						break;
 					case KEY.SPACE:
 						$("#play").click();

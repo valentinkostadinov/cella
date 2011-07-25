@@ -9,19 +9,19 @@ var AutomatonManager = {
 	speed: 0,
 	DEFAULT_SPEED: -1,
 	MAX_SPEED: 24,
-	MIN_SPEED: -4,
-	delay: [50, 100, 250, 500, 1000],
+	MIN_SPEED: -5,
+	delay: [25, 50, 100, 250, 500, 1000],
 
 	getSpeedString: function() {
 		if (this.speed > 0) {
-			return "x" + this.getSteps(); 
+			return "x" + this.getSteps();
 		} else {
 			return "~" + (1000/this.getSleep()) + 'Hz';
 		};
 	},
 
 	getSleep: function() {
-		 return this.speed > 0 ? 1 : this.delay[-this.speed];
+		return this.speed > 0 ? 1 : this.delay[-this.speed];
 	},
 
 	getSteps: function() {
@@ -59,8 +59,9 @@ var AutomatonManager = {
 				return;
 			}
 			this.paused = false;
-			if (!this.pattern) {
-				this.pattern = Automaton.toPattern();
+			var pattern = Automaton.toPattern();
+			if (pattern) {
+				this.pattern = pattern;
 			}
 			this.stateChanged();
 			this.run();
@@ -68,12 +69,6 @@ var AutomatonManager = {
 			this.paused = true;
 			this.stateChanged();
 		}
-	},
-	
-	halt: function() {
-		clearTimeout(this.timer);
-		this.paused = true;
-		this.stateChanged();
 	},
 
 	reset: function() {
@@ -84,6 +79,12 @@ var AutomatonManager = {
 			Grid.fitPattern();
 			Grid.paint();
 		}
+	},
+
+	halt: function() {
+		clearTimeout(this.timer);
+		this.paused = true;
+		this.stateChanged();
 	},
 
 	run: function() {

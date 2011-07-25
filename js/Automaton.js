@@ -106,43 +106,49 @@ var Automaton = {
 		return false;
 	},
 
+	add: function(p) {
+		var mapPosition = this.toMapPosition(p);
+		var block = this.map[mapPosition.hash()];
+		if (!block) {
+			block = new BitBlock(this.map, mapPosition);
+			this.map[mapPosition.hash()] = block;
+		}
+		var original = block.matrix;
+		block.matrix |= (1 << this.toBlockIndex(p));
+		if (original != block.matrix) {
+			this.size++;
+			// always keep empty blocks around non-empty ones
+			for (var heading in Headings) {
+				var neighborPosition = Headings[heading].toPosition(mapPosition);
+				var neighbor = this.map[neighborPosition.hash()];
+				if (!neighbor) {
+					this.map[neighborPosition.hash()] = new BitBlock(this.map, neighborPosition);
+				}
+			}
+		}
+	},
+
+	remove: function(p) {
+		var mapPosition = this.toMapPosition(p);
+		var block = this.map[mapPosition.hash()];
+		if (block) {
+			var original = block.matrix;
+			block.matrix &= ~(1 << this.toBlockIndex(p));
+			if (original != block.matrix) {
+				this.size--;
+				if (block.isDisposable()) {
+					block.dispose();
+					delete this.map[mapPosition.hash()];
+				}
+			}
+		}
+	},
+
 	set: function(p, state) {
 		if (state) {
-			// add
-			var mapPosition = this.toMapPosition(p);
-			var block = this.map[mapPosition.hash()];
-			if (!block) {
-				block = new BitBlock(this.map, mapPosition);
-				this.map[mapPosition.hash()] = block;
-			}
-			var original = block.matrix;
-			block.matrix |= (1 << this.toBlockIndex(p));
-			if (original != block.matrix) {
-				this.size++;
-				// always keep empty blocks around non-empty ones
-				for (var heading in Headings) {
-					var neighborPosition = Headings[heading].toPosition(mapPosition);
-					var neighbor = this.map[neighborPosition.hash()];
-					if (!neighbor) {
-						this.map[neighborPosition.hash()] = new BitBlock(this.map, neighborPosition);
-					}
-				}
-			}
+			this.add(p);
 		} else {
-			// remove
-			var mapPosition = this.toMapPosition(p);
-			var block = this.map[mapPosition.hash()];
-			if (block) {
-				var original = block.matrix;
-				block.matrix &= ~(1 << this.toBlockIndex(p));
-				if (original != block.matrix) {
-					this.size--;
-					if (block.isDisposable()) {
-						block.dispose();
-						delete this.map[mapPosition.hash()];
-					}
-				}
-			}
+			this.remove(p);
 		}
 		this.stateChanged();
 	},
@@ -166,16 +172,20 @@ var Automaton = {
 	},
 
 	addPattern: function(pattern) {
-		pattern.forEach(function(p) {
-			Automaton.set(p, true);
-		});
+		for (var i in pattern) {
+			Automaton.add(pattern[i]);
+		};
 	},
 
 	toPattern: function() {
 		var pattern = [];
-		this.render(function(x, y) {
-			pattern.push({x: x, y: y});
+		this.render( function(x, y) {
+			pattern.push({
+				x: x,
+				y: y
+			});
 		});
+
 		return pattern;
 	},
 
@@ -184,9 +194,10 @@ var Automaton = {
 	},
 
 	stateChanged: function(code) {
-		this.listeners.forEach(function(listener){
+		this.listeners.forEach( function(listener) {
 			listener.stateChanged(code);
 		});
+
 	},
 
 }
