@@ -30,20 +30,20 @@ var AutomatonManager = {
 
 	setSpeed: function(speed) {
 		this.speed = Math.max(this.MIN_SPEED, Math.min(this.MAX_SPEED, speed));
-		this.stateChanged();
+		this.trigger('speed');
 	},
 
 	speedUp: function() {
 		if (this.speed < this.MAX_SPEED) {
 			this.speed++;
-			this.stateChanged();
+			this.trigger('speed');
 		}
 	},
 
 	speedDown: function() {
 		if (this.speed > this.MIN_SPEED) {
 			this.speed--;
-			this.stateChanged();
+			this.trigger('speed');
 		}
 	},
 
@@ -51,15 +51,13 @@ var AutomatonManager = {
 	pattern: null,
 	timer: null,
 
-	listeners: [],
-
 	toggle: function() {
 		if (this.paused) {
 			if (Automaton.size == 0) {
 				return;
 			}
 			this.paused = false;
-			this.stateChanged();
+			this.trigger('paused');
 			var pattern = Automaton.toPattern();
 			if (pattern) {
 				this.pattern = pattern;
@@ -67,8 +65,7 @@ var AutomatonManager = {
 			this.resetTime();
 			this.run();
 		} else {
-			this.paused = true;
-			this.stateChanged();
+			this.halt();
 		}
 	},
 
@@ -85,7 +82,7 @@ var AutomatonManager = {
 	halt: function() {
 		clearTimeout(this.timer);
 		this.paused = true;
-		this.stateChanged();
+		this.trigger('paused');
 	},
 
 	run: function() {
@@ -96,10 +93,11 @@ var AutomatonManager = {
 		var timestamp = new Date();
 		Automaton.step(this.getSteps());
 		this.recordTime((new Date() - timestamp) / this.getSteps());
+		this.trigger('tick');
 
 		if (Automaton.size == 0 || (Automaton.births == 0 && Automaton.deaths == 0)) {
 			this.paused = true;
-			this.stateChanged();
+			this.trigger('paused');
 		}
 		if (!this.paused) {
 			this.timer = setTimeout(this.run, this.getSleep());
@@ -114,17 +112,6 @@ var AutomatonManager = {
 			this.halt();
 		}
 		Automaton.step(steps);
-	},
-
-	addListener: function(listener) {
-		this.listeners.push(listener);
-	},
-
-	stateChanged: function(code) {
-		this.listeners.forEach( function(listener) {
-			listener.stateChanged(code);
-		});
-
 	},
 
 	// a moving window performance timer
@@ -151,6 +138,8 @@ var AutomatonManager = {
 	},
 
 }
+
+$.extend(AutomatonManager, EventHandling);
 
 function Queue() {
 	this.head = this.tail = null;

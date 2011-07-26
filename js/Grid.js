@@ -44,14 +44,15 @@ var Grid = {
 		me.canvas = canvas;
 		me.context = canvas.getContext("2d");
 
-		Automaton.addListener({
-			stateChanged: function(stepChange) {
-				if (me.autoFit && stepChange) {
-					me.fitPattern();
-				}
-				me.paint();
+		Automaton.bind("step", function() {
+			if (me.autoFit) {
+				me.fitPattern();
 			}
+			me.paint();
+		});
 
+		Automaton.bind("edit", function() {
+			me.paint()
 		});
 
 		// resizing setup
@@ -417,24 +418,6 @@ var Grid = {
 		}
 	},
 
-	// event handling
-	eventHandlers: {},
-
-	bind: function(eventType, eventHandler) {
-		var handlers = this.eventHandlers[eventType];
-		if (!handlers) {
-			handlers = this.eventHandlers[eventType] = [];
-		}
-		handlers.push(eventHandler);
-	},
-
-	trigger: function(eventType) {
-		var handlers = this.eventHandlers[eventType];
-		if (handlers) {
-			for (var i = 0; i < handlers.length; i++) {
-				handlers[i]();
-			}
-		}
-	},
-
 }
+
+$.extend(Grid, EventHandling);

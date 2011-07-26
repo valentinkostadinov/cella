@@ -56,16 +56,26 @@ function onReady() {
 		Grid.paint();
 	});
 
-	$("#play").button({
-		text: false,
+	var playOptions = {
 		label: "Play [Space]",
 		icons: {
 			primary: "ui-icon-play",
 		},
+	};
+	var pauseOptions = {
+		label: "Pause [Space]",
+		icons: {
+			primary: "ui-icon-pause",
+		},
+	};
+	$("#play").button({
+		text: false,
 	})
 	.click( function() {
 		AutomatonManager.toggle();
 	});
+
+	$("#play").button("option", playOptions);
 
 	$("#nextgen").button({
 		text: false,
@@ -256,20 +266,10 @@ function onReady() {
 
 	updateStats();
 
-	// listeners
-	Automaton.addListener({
-		stateChanged: updateStats
-	});
+	// event binding
+	Automaton.bind("step", updateStats);
+	Automaton.bind("edit", updateStats);
 
-	// Grid.addListener({
-		// stateChanged: function() {
-			// $("#autofit")[0].checked = Grid.autoFit;
-			// $("#autofit").button("refresh");
-			// $("#zoomslider").slider("value", Grid.getZoom());
-			// $("#scale").button("option", "label", Grid.getScaleString());
-		// }
-// 
-	// });
 	Grid.bind("autofit", function() {
 		$("#autofit")[0].checked = Grid.autoFit;
 		$("#autofit").button("refresh");
@@ -280,30 +280,23 @@ function onReady() {
 		$("#scale").button("option", "label", Grid.getScaleString());
 	});
 
-	AutomatonManager.addListener({
-		stateChanged: function() {
-			$("#speedslider").slider("value", AutomatonManager.speed);
-			$("#speed").button("option", "label", AutomatonManager.getSpeedString());
-			$("#nextstep").button("option", "label", getNextStepLabel());
-			var options;
-			if (AutomatonManager.paused) {
-				options = {
-					label: "Play [Space]",
-					icons: {
-						primary: "ui-icon-play"
-					},
-				};
-			} else {
-				options = {
-					label: "Pause [Space]",
-					icons: {
-						primary: "ui-icon-pause"
-					}
-				};
-			}
-			$("#play").button("option", options);
-		}
+	AutomatonManager.bind('speed', function() {
+		$("#speedslider").slider("value", AutomatonManager.speed);
+		$("#speed").button("option", "label", AutomatonManager.getSpeedString());
+		$("#nextstep").button("option", "label", getNextStepLabel());
+		$("#play").button("option", AutomatonManager.paused ? playOptions : pauseOptions);
+	});
 
+	AutomatonManager.bind('paused', function() {
+		$("#play").button("option", AutomatonManager.paused ? playOptions : pauseOptions);
+		if (AutomatonManager.paused) {
+			latency.innerHTML = "";
+		} 
+	});
+
+	var latency = $("#latency")[0];
+	AutomatonManager.bind('tick', function() {
+		latency.innerHTML = Math.floor(AutomatonManager.getMovingAverage()) + "ms";
 	});
 
 	// keyboard setup

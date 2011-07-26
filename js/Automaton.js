@@ -94,7 +94,7 @@ var Automaton = {
 			});
 
 		}
-		this.stateChanged(true);
+		this.trigger("step");
 	},
 
 	isSet: function(p) {
@@ -150,7 +150,7 @@ var Automaton = {
 		} else {
 			this.remove(p);
 		}
-		this.stateChanged();
+		this.trigger('edit');
 	},
 
 	clear: function() {
@@ -160,7 +160,7 @@ var Automaton = {
 		this.generation = 0;
 		this.size = 0;
 
-		this.stateChanged();
+		this.trigger('edit');
 	},
 
 	toMapPosition: function(p) {
@@ -175,6 +175,7 @@ var Automaton = {
 		for (var i in pattern) {
 			Automaton.add(pattern[i]);
 		};
+		this.trigger('edit');
 	},
 
 	toPattern: function() {
@@ -189,15 +190,6 @@ var Automaton = {
 		return pattern;
 	},
 
-	addListener: function(listener) {
-		this.listeners.push(listener);
-	},
-
-	stateChanged: function(code) {
-		this.listeners.forEach( function(listener) {
-			listener.stateChanged(code);
-		});
-
-	},
-
 }
+
+$.extend(Automaton, EventHandling);
