@@ -59,11 +59,12 @@ var AutomatonManager = {
 				return;
 			}
 			this.paused = false;
+			this.stateChanged();
 			var pattern = Automaton.toPattern();
 			if (pattern) {
 				this.pattern = pattern;
 			}
-			this.stateChanged();
+			this.resetTime();
 			this.run();
 		} else {
 			this.paused = true;
@@ -92,7 +93,9 @@ var AutomatonManager = {
 	},
 
 	tick: function() {
+		var timestamp = new Date();
 		Automaton.step(this.getSteps());
+		this.recordTime((new Date() - timestamp) / this.getSteps());
 
 		if (Automaton.size == 0 || (Automaton.births == 0 && Automaton.deaths == 0)) {
 			this.paused = true;
@@ -108,8 +111,7 @@ var AutomatonManager = {
 			steps = this.getSteps();
 		}
 		if (!this.paused) {
-			this.paused = true;
-			this.stateChanged();
+			this.halt();
 		}
 		Automaton.step(steps);
 	},
@@ -125,4 +127,63 @@ var AutomatonManager = {
 
 	},
 
+	// a moving window performance timer
+	MAX_WINDOW_SIZE: 20,
+	windowSum: 0,
+	movingWindow: new Queue(),
+
+	resetTime: function() {
+		this.windowSum = 0;
+		this.movingWindow.clear();
+	},
+
+	recordTime: function(time) {
+		this.movingWindow.enqueue(time);
+		this.windowSum += time;
+		if (this.movingWindow.size > this.MAX_WINDOW_SIZE) {
+			this.windowSum -= this.movingWindow.dequeue();
+		}
+	},
+
+	getMovingAverage: function() {
+		var size = this.movingWindow.size;
+		return this.windowSum / (size == 0 ? 0 : size);
+	},
+
+}
+
+function Queue() {
+	this.head = this.tail = null;
+	this.size = 0;
+}
+
+Queue.prototype.enqueue = function(value) {
+	var node = {
+		value: value,
+		next: null,
+	}
+	if (this.size == 0) {
+		this.head = this.tail = node;
+	} else {
+		this.tail = this.tail.next = node;
+	}
+	this.size++;
+}
+
+Queue.prototype.dequeue = function() {
+	if (this.size == 0) {
+		return undefined;
+	}
+	var value = this.head.value;
+	this.head = this.head.next;
+	if (this.head == null) {
+		this.tail == null;
+	}
+	this.size--;
+	return value;
+};
+
+Queue.prototype.clear = function() {
+	while (this.dequeue()) {
+	};
 }

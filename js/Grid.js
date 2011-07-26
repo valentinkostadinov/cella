@@ -243,10 +243,11 @@ var Grid = {
 		this.curZoomPos.y = y;
 		this.curCenter = this.getCenter();
 
-		if (!dontChangeAutoFit) {
+		if (!dontChangeAutoFit && this.autoFit) {
 			this.autoFit = false;
+			this.trigger('autofit');
 		}
-		this.stateChanged();
+		this.trigger('zoom');
 		this.paint();
 	},
 
@@ -358,7 +359,6 @@ var Grid = {
 	recenter: function() {
 		this.offset.x = 0;
 		this.offset.y = 0;
-		this.stateChanged();
 		this.paint();
 	},
 
@@ -371,7 +371,7 @@ var Grid = {
 
 	toggleAutoFit: function() {
 		this.autoFit = !this.autoFit;
-		this.stateChanged();
+		this.trigger('autofit');
 	},
 
 	fitPattern: function(forceFit) {
@@ -413,21 +413,28 @@ var Grid = {
 				this.offset.x = x / this.scale;
 				this.offset.y = y / this.scale;
 			}
-			this.stateChanged();
+			this.trigger("zoom");
 		}
 	},
 
-	listeners: [],
+	// event handling
+	eventHandlers: {},
 
-	addListener: function(listener) {
-		this.listeners.push(listener);
+	bind: function(eventType, eventHandler) {
+		var handlers = this.eventHandlers[eventType];
+		if (!handlers) {
+			handlers = this.eventHandlers[eventType] = [];
+		}
+		handlers.push(eventHandler);
 	},
 
-	stateChanged: function(code) {
-		this.listeners.forEach( function(listener) {
-			listener.stateChanged(code);
-		});
-
+	trigger: function(eventType) {
+		var handlers = this.eventHandlers[eventType];
+		if (handlers) {
+			for (var i = 0; i < handlers.length; i++) {
+				handlers[i]();
+			}
+		}
 	},
 
 }

@@ -2,9 +2,9 @@
 
 function onReady() {
 	// prevent selection
-	document.onselectstart= function() {
+	document.onselectstart = function() {
 		return false;
-	}
+	};
 
 	Grid.init(document.getElementById("grid"));
 
@@ -261,14 +261,23 @@ function onReady() {
 		stateChanged: updateStats
 	});
 
-	Grid.addListener({
-		stateChanged: function() {
-			$("#autofit")[0].checked = Grid.autoFit;
-			$("#autofit").button("refresh");
-			$("#zoomslider").slider("value", Grid.getZoom());
-			$("#scale").button("option", "label", Grid.getScaleString());
-		}
+	// Grid.addListener({
+		// stateChanged: function() {
+			// $("#autofit")[0].checked = Grid.autoFit;
+			// $("#autofit").button("refresh");
+			// $("#zoomslider").slider("value", Grid.getZoom());
+			// $("#scale").button("option", "label", Grid.getScaleString());
+		// }
+// 
+	// });
+	Grid.bind("autofit", function() {
+		$("#autofit")[0].checked = Grid.autoFit;
+		$("#autofit").button("refresh");
+	});
 
+	Grid.bind("zoom", function() {
+		$("#zoomslider").slider("value", Grid.getZoom());
+		$("#scale").button("option", "label", Grid.getScaleString());
 	});
 
 	AutomatonManager.addListener({
@@ -386,6 +395,21 @@ function onReady() {
 			velocity = Grid.scale > 0 ? Grid.scale : 1;
 		});
 
+	})();
+
+	// REMOVE ME
+	(function() {
+		var req = new XMLHttpRequest();
+		req.open("GET", "patterns/AQUA25.LIF");
+		req.onreadystatechange = function() {
+			if (req.readyState == XMLHttpRequest.DONE && req.statusText == 'OK') {
+				Automaton.addPattern(Patterns.loadLIF(req.responseText).positions);
+				Grid.fitPattern();
+				Grid.paint();
+			}
+		}
+
+		req.send();
 	})();
 
 }
