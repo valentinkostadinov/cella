@@ -291,12 +291,12 @@ function onReady() {
 		$("#play").button("option", AutomatonManager.paused ? playOptions : pauseOptions);
 		if (AutomatonManager.paused) {
 			latency.innerHTML = "";
-		} 
+		}
 	});
 
 	var latency = $("#latency")[0];
 	AutomatonManager.bind('tick', function() {
-		latency.innerHTML = Math.floor(AutomatonManager.getMovingAverage()) + "ms";
+		latency.innerHTML = new Number(AutomatonManager.getMovingAverage()).toFixed(1) + "ms";
 	});
 
 	// keyboard setup
@@ -391,18 +391,10 @@ function onReady() {
 	})();
 
 	// REMOVE ME
-	(function() {
-		var req = new XMLHttpRequest();
-		req.open("GET", "patterns/AQUA25.LIF");
-		req.onreadystatechange = function() {
-			if (req.readyState == XMLHttpRequest.DONE && req.statusText == 'OK') {
-				Automaton.addPattern(Patterns.loadLIF(req.responseText).positions);
-				Grid.fitPattern();
-				Grid.paint();
-			}
-		}
-
-		req.send();
-	})();
+	$.get("patterns/AQUA25.LIF", function(data) {
+		Automaton.addPattern(Patterns.loadLIF(data).positions);
+		Grid.fitPattern();
+		Grid.paint();
+	});
 
 }

@@ -71,12 +71,11 @@ var Automaton = {
 			this.size += (this.births - this.deaths);
 
 			// remove disposable blocks
-			var me = this;
-			this.disposables.forEach( function(p) {
-				var key = p.hash();
-				me.map[key].dispose();
-				delete me.map[key];
-			});
+			for (var i = 0; i < this.disposables.length; i++) {
+				var key = this.disposables[i].hash();
+				this.map[key].dispose();
+				delete this.map[key];
+			}
 
 			for (var key in this.map) {
 				this.map[key].flip();
@@ -84,14 +83,15 @@ var Automaton = {
 
 			// always keep empty blocks around non-empty ones
 			var neighbor = new Position();
-			this.newNonEmpty.forEach( function(p) {
+			for (var i = 0; i < this.newNonEmpty.length; i++) {
+				var pos = this.newNonEmpty[i];
 				for (var heading in Headings) {
-					Headings[heading].toPosition(p, neighbor);
-					if (!me.map[neighbor.hash()]) {
-						me.map[neighbor.hash()] = new BitBlock(me.map, neighbor);
+					Headings[heading].toPosition(pos, neighbor);
+					if (!this.map[neighbor.hash()]) {
+						this.map[neighbor.hash()] = new BitBlock(this.map, neighbor);
 					}
 				}
-			});
+			};
 
 		}
 		this.trigger("step");
