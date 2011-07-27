@@ -8,7 +8,7 @@ var AutomatonManager = {
 	 */
 	speed: 0,
 	DEFAULT_SPEED: -1,
-	MAX_SPEED: 24,
+	MAX_SPEED: 32,
 	MIN_SPEED: -5,
 	delay: [25, 50, 100, 250, 500, 1000],
 

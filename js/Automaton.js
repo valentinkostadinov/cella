@@ -3,28 +3,44 @@
 var Automaton = {
 
 	// Position.hash() -> BitBlock
-	map: [],
-
-	rule: Rules.Life,
-
-	disposables: [],
-	newNonEmpty: [],
+	map: {},
+	keys: [],
 
 	births: 0,
 	deaths: 0,
 	size: 0,
 	generation: 0,
 
-	listeners: [],
+	rule: Rules.Life,
 
-	setRule: function(rule) {
-		this.rule = rule;
-		setTransformRule(rule);
+	mapSet: function(key, value) {
+		this.map[key] = value;
+		this.keys.push(key);
+	},
+
+	mapRemove: function(key) {
+		delete this.map[key];
+		var keyIndex = this.keys.indexOf(key);
+		this.keys[keyIndex] = this.keys[this.keys.length - 1];
+		this.keys.length--;
+	},
+
+	cleanUpKeys: function() {
+		var srcIndex = 0;
+		var dstIndex = 0;
+		while (srcIndex < this.keys.length) {
+			var key = this.keys[srcIndex];
+			if (key != undefined) {
+				this.keys[dstIndex++] = key;
+			}
+			srcIndex++;
+		}
+		this.keys.length = dstIndex;
 	},
 
 	render: function(cellRenderer) {
-		for (var key in this.map) {
-			var block = this.map[key];
+		for (var i = 0; i < this.keys.length; i++) {
+			var block = this.map[this.keys[i]];
 			var matrix = block.matrix;
 			if (matrix != 0) {
 				var pos = block.position;
@@ -47,19 +63,19 @@ var Automaton = {
 			var stepDeaths = 0;
 
 			// compute
-			this.disposables = [];
-			this.newNonEmpty = [];
-			for (var key in this.map) {
-				var block = this.map[key];
+			var disposables = [];
+			var newNonEmpty = [];
+			for (var i = 0; i < this.keys.length; i++) {
+				var block = this.map[this.keys[i]];
 
 				if (block.isDisposable()) {
-					this.disposables.push(block.position);
+					disposables.push(i);
 				} else {
 					block.computeNext();
 					stepBirths += block.births;
 					stepDeaths += block.deaths;
 					if (block.matrix == 0 && block.next != 0) {
-						this.newNonEmpty.push(block.position);
+						newNonEmpty.push(block.position);
 					}
 				}
 			}
@@ -71,24 +87,28 @@ var Automaton = {
 			this.size += (this.births - this.deaths);
 
 			// remove disposable blocks
-			for (var i = 0; i < this.disposables.length; i++) {
-				var key = this.disposables[i].hash();
+			for (var i = 0; i < disposables.length; i++) {
+				var keyIndex = disposables[i];
+				var key = this.keys[keyIndex];
+
 				this.map[key].dispose();
 				delete this.map[key];
+				delete this.keys[keyIndex]
 			}
+			this.cleanUpKeys();
 
-			for (var key in this.map) {
-				this.map[key].flip();
+			for (var i = 0; i < this.keys.length; i++) {
+				this.map[this.keys[i]].flip();
 			}
 
 			// always keep empty blocks around non-empty ones
 			var neighbor = new Position();
-			for (var i = 0; i < this.newNonEmpty.length; i++) {
-				var pos = this.newNonEmpty[i];
+			for (var i = 0; i < newNonEmpty.length; i++) {
+				var pos = newNonEmpty[i];
 				for (var heading in Headings) {
 					Headings[heading].toPosition(pos, neighbor);
 					if (!this.map[neighbor.hash()]) {
-						this.map[neighbor.hash()] = new BitBlock(this.map, neighbor);
+						this.mapSet(neighbor.hash(), new BitBlock(this.map, neighbor));
 					}
 				}
 			};
@@ -97,21 +117,12 @@ var Automaton = {
 		this.trigger("step");
 	},
 
-	isSet: function(p) {
-		var block = this.map[this.toMapPosition(p).hash()];
-		if (block) {
-			var n = this.toBlockIndex(p);
-			return (block.matrix & (1 << n)) != 0;
-		}
-		return false;
-	},
-
 	add: function(p) {
 		var mapPosition = this.toMapPosition(p);
 		var block = this.map[mapPosition.hash()];
 		if (!block) {
 			block = new BitBlock(this.map, mapPosition);
-			this.map[mapPosition.hash()] = block;
+			this.mapSet(mapPosition.hash(), block);
 		}
 		var original = block.matrix;
 		block.matrix |= (1 << this.toBlockIndex(p));
@@ -122,7 +133,7 @@ var Automaton = {
 				var neighborPosition = Headings[heading].toPosition(mapPosition);
 				var neighbor = this.map[neighborPosition.hash()];
 				if (!neighbor) {
-					this.map[neighborPosition.hash()] = new BitBlock(this.map, neighborPosition);
+					this.mapSet(neighborPosition.hash(), new BitBlock(this.map, neighborPosition));
 				}
 			}
 		}
@@ -138,10 +149,31 @@ var Automaton = {
 				this.size--;
 				if (block.isDisposable()) {
 					block.dispose();
-					delete this.map[mapPosition.hash()];
+					this.mapRemove(mapPosition.hash());
 				}
 			}
 		}
+	},
+
+	clear: function() {
+		this.map = {};
+		this.keys.length = 0;
+
+		this.births = 0;
+		this.deaths = 0;
+		this.generation = 0;
+		this.size = 0;
+
+		this.trigger('edit');
+	},
+
+	isSet: function(p) {
+		var block = this.map[this.toMapPosition(p).hash()];
+		if (block) {
+			var n = this.toBlockIndex(p);
+			return (block.matrix & (1 << n)) != 0;
+		}
+		return false;
 	},
 
 	set: function(p, state) {
@@ -150,16 +182,6 @@ var Automaton = {
 		} else {
 			this.remove(p);
 		}
-		this.trigger('edit');
-	},
-
-	clear: function() {
-		this.map = [];
-		this.births = 0;
-		this.deaths = 0;
-		this.generation = 0;
-		this.size = 0;
-
 		this.trigger('edit');
 	},
 
@@ -188,6 +210,11 @@ var Automaton = {
 		});
 
 		return pattern;
+	},
+
+	setRule: function(rule) {
+		this.rule = rule;
+		setTransformRule(rule);
 	},
 
 }
