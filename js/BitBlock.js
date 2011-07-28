@@ -6,7 +6,8 @@ function Position(x, y) {
 }
 
 Position.prototype.hash = function() {
-	return this.x ^ (this.y << 14);
+	// avoid negative numbers to speed up array performance
+	return (this.x & 0xFFFF) | ((this.y & 0x7FFF) << 16);
 }
 
 function Heading(x, y) {
