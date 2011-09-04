@@ -1,7 +1,6 @@
 body {
 	font-size: 62.5%;
 }
-
 #grid {
 	position: absolute;
 	top: 0px;
@@ -9,25 +8,20 @@ body {
 	z-index: -10;
 	background-color: rgb(40, 40, 40);
 }
-
 #speed, #scale {
 	width: 5em;
 }
-
 #speedslider, #zoomslider {
 	margin-right: -.3em;
 }
-
-#toolbar>div {
+#toolbar > div {
 	opacity: .9;
 	float: left;
 }
-
 #stats {
 	float: right;
 }
-
-#stats>span {
+#stats > span {
 	float: right;
 	clear: right;
 	text-align: right;
@@ -36,9 +30,4 @@ body {
 	cursor: default;
 	font-size: 1.3em;
 	font-family: Consolas, Courier;
-}
-
-#helpdialog dt {
-	font-weight: bold;
-	margin-top: 1em;
 }
