@@ -1,96 +1,74 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Cella - Cellular Automata Engine</title>
 
-		<!-- jQuery -->
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Cella : Cella is an engine for exploring Conway's Game of Life and other cellular automata written in JavaScript using HTML5 canvas." />
 
-		<!-- JQueryUI -->
-		<link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.all.css">
-		<script type="text/javascript" src="js/ui/jquery.ui.core.js"></script>
-		<script type="text/javascript" src="js/ui/jquery.ui.widget.js"></script>
-		<script type="text/javascript" src="js/ui/jquery.ui.mouse.js"></script>
-		<script type="text/javascript" src="js/ui/jquery.ui.position.js"></script>
-		<script type="text/javascript" src="js/ui/jquery.ui.button.js"></script>
-		<script type="text/javascript" src="js/ui/jquery.ui.slider.js"></script>
-		<script type="text/javascript" src="js/ui/jquery.ui.menu.js"></script>
-		<script type="text/javascript" src="js/ui/jquery.ui.popup.js"></script>
-		<script type="text/javascript" src="js/ui/jquery.mousewheel.js"></script>
-		<script type="text/javascript" src="js/ui/jquery.ui.dialog.js"></script>
-		<script type="text/javascript" src="js/ui/jquery.hotkeys.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-		<!-- Cella engine code-->
-		<link rel="stylesheet" type="text/css" href="css/style.css">
-		<script type="text/javascript" src="js/EventHandling.js"></script>
-		<script type="text/javascript" src="js/Rule.js"></script>
-		<script type="text/javascript" src="js/Pattern.js"></script>
-		<script type="text/javascript" src="js/Main.js"></script>
-		<script type="text/javascript" src="js/Grid.js"></script>
-		<script type="text/javascript" src="js/Automaton.js"></script>
-		<script type="text/javascript" src="js/BitBlock.js"></script>
-		<script type="text/javascript" src="js/AutomatonManager.js"></script>
+    <title>Cella</title>
+  </head>
 
-		<script type="text/javascript">$(document).ready(onReady);</script>
-	</head>
+  <body>
 
-	<body>
-		<canvas id="grid">
-		</canvas>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ValentinKostadinov/Cella">View on GitHub</a>
 
-		<div id="toolbar">
-			<div>
-				<button id="clear"></button>
-				<span id="rungroup">
-					<button id="reset"></button>
-					<button id="play"></button>
-					<button id="nextstep"></button>
-					<button id="nextgen"></button>
-				</span>
-			</div>
+          <h1 id="project_title">Cella</h1>
+          <h2 id="project_tagline">Cella is an engine for exploring Conway's Game of Life and other cellular automata written in JavaScript using HTML5 canvas.</h2>
 
-			<div>
-				<button id="speed"></button>
-				<button id="slower"></button>
-				<button id="faster"></button>
-				<div id="speedslider">
-				</div>
-			</div>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ValentinKostadinov/Cella/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ValentinKostadinov/Cella/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-			<div>
-				<input id="gridlines" type="checkbox" />
-				<label for="gridlines"></label>
-				<span id="fitgroup">
-					<button id="fitpattern"></button>
-					<input id="autofit" type="checkbox" />
-					<label for="autofit"></label>
-				</span>
-			</div>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>Welcome to GitHub Pages.</h3>
 
-			<div>
-				<button id="scale"></button>
-				<button id="zoomout"></button>
-				<button id="zoomin"></button>
-				<div id="zoomslider">
-				</div>
-			</div>
+<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
 
-			<div>
-				<button id="rule"></button>
-				<button id="ruleselect"></button>
-				<ul id="rulelist">
-				</ul>
-			</div>
+<pre><code>$ cd your_repo_root/repo_name
+$ git fetch origin
+$ git checkout gh-pages
+</code></pre>
 
-		</div>
+<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
 
-		<div id="stats">
-			<span id="population" title="Population"></span>
-			<span id="generation" title="Generation"></span>
-			<span id="latency" title="Latency (per generation)"></span>
-		</div>
+<h3>Designer Templates</h3>
 
-	</body>
+<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
 
+<h3>Rather Drive Stick?</h3>
+
+<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+
+<h3>Authors and Contributors</h3>
+
+<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+
+<h3>Support or Contact</h3>
+
+<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Cella maintained by <a href="https://github.com/ValentinKostadinov">ValentinKostadinov</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
 </html>
