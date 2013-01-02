@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Cella - Cellular Automata Engine</title>
+
+		<!-- jQuery -->
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+		<!-- JQueryUI -->
+		<link rel="stylesheet" type="text/css" href="css/themes/base/jquery.ui.all.css">
+		<script type="text/javascript" src="js/ui/jquery.ui.core.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.widget.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.mouse.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.position.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.button.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.slider.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.menu.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.popup.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.mousewheel.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.ui.dialog.js"></script>
+		<script type="text/javascript" src="js/ui/jquery.hotkeys.js"></script>
+
+		<!-- Cella engine code-->
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script type="text/javascript" src="js/EventHandling.js"></script>
+		<script type="text/javascript" src="js/Rule.js"></script>
+		<script type="text/javascript" src="js/Pattern.js"></script>
+		<script type="text/javascript" src="js/Main.js"></script>
+		<script type="text/javascript" src="js/Grid.js"></script>
+		<script type="text/javascript" src="js/Automaton.js"></script>
+		<script type="text/javascript" src="js/BitBlock.js"></script>
+		<script type="text/javascript" src="js/AutomatonManager.js"></script>
+
+		<script type="text/javascript">$(document).ready(onReady);</script>
+	</head>
+
+	<body>
+		<canvas id="grid">
+		</canvas>
+
+		<div id="toolbar">
+			<div>
+				<button id="clear"></button>
+				<span id="rungroup">
+					<button id="reset"></button>
+					<button id="play"></button>
+					<button id="nextstep"></button>
+					<button id="nextgen"></button>
+				</span>
+			</div>
+
+			<div>
+				<button id="speed"></button>
+				<button id="slower"></button>
+				<button id="faster"></button>
+				<div id="speedslider">
+				</div>
+			</div>
+
+			<div>
+				<input id="gridlines" type="checkbox" />
+				<label for="gridlines"></label>
+				<span id="fitgroup">
+					<button id="fitpattern"></button>
+					<input id="autofit" type="checkbox" />
+					<label for="autofit"></label>
+				</span>
+			</div>
+
+			<div>
+				<button id="scale"></button>
+				<button id="zoomout"></button>
+				<button id="zoomin"></button>
+				<div id="zoomslider">
+				</div>
+			</div>
+
+			<div>
+				<button id="rule"></button>
+				<button id="ruleselect"></button>
+				<ul id="rulelist">
+				</ul>
+			</div>
+
+		</div>
+
+		<div id="stats">
+			<span id="population" title="Population"></span>
+			<span id="generation" title="Generation"></span>
+			<span id="latency" title="Latency (per generation)"></span>
+		</div>
+
+	</body>
+
+</html>

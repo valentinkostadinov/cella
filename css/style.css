@@ -1,0 +1,33 @@
+body {
+	font-size: 62.5%;
+}
+#grid {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: -10;
+	background-color: rgb(40, 40, 40);
+}
+#speed, #scale {
+	width: 5em;
+}
+#speedslider, #zoomslider {
+	margin-right: -.3em;
+}
+#toolbar > div {
+	opacity: .9;
+	float: left;
+}
+#stats {
+	float: right;
+}
+#stats > span {
+	float: right;
+	clear: right;
+	text-align: right;
+	padding: .2em .8em;
+	color: #d0d0d0;
+	cursor: default;
+	font-size: 1.3em;
+	font-family: Consolas, Courier;
+}
