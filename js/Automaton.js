@@ -1,5 +1,3 @@
-"use strict";
-
 var Automaton = {
 
 	// Position.hash() -> BitBlock

@@ -1,33 +1,46 @@
 body {
-	font-size: 62.5%;
+    font-size: 70%;
 }
+
 #grid {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	z-index: -10;
-	background-color: rgb(40, 40, 40);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -100;
+    background-color: rgb(40, 40, 40);
+}
+
+#toolbar {
+    opacity: .85;
+    display: table-row;
+    float: left;
+}
+#toolbar > * {
+    display: table-cell;
+    padding-right: 1em;
 }
 #speed, #scale {
-	width: 5em;
+    width: 5em;
 }
 #speedslider, #zoomslider {
-	margin-right: -.3em;
+    margin-right: -.3em;
 }
-#toolbar > div {
-	opacity: .9;
-	float: left;
+
+.ui-menu {
+    position: absolute;
+    width: 12em;
 }
+
 #stats {
-	float: right;
+    float: right;
 }
 #stats > span {
-	float: right;
-	clear: right;
-	text-align: right;
-	padding: .2em .8em;
-	color: #d0d0d0;
-	cursor: default;
-	font-size: 1.3em;
-	font-family: Consolas, Courier;
+    float: right;
+    clear: right;
+    text-align: right;
+    padding: .2em .8em;
+    color: #d0d0d0;
+    cursor: default;
+    font-size: 1.3em;
+    font-family: Consolas, Courier;
 }
