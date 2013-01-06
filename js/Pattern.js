@@ -6,6 +6,20 @@ function Pattern(positions, rule, name, description) {
 }
 
 var Patterns = {
+
+	load : function(input, name) {
+		var dotIndex = name.lastIndexOf('.');
+		var ext = name.slice(dotIndex + 1).toUpperCase();
+		var name = name.slice(0, dotIndex);
+		switch (ext) {
+			case 'LIF':
+				return Patterns.loadLIF(input, name);
+			case 'RLE':
+				return Patterns.loadRLE(input, name);
+			default:
+		}
+	},
+
 	loadLIF : function(input, name) {
 		var positions = [];
 		var rule = Rules.Life;
@@ -15,25 +29,25 @@ var Patterns = {
 		var y = 0;
 		var pattern = /.*[\r\n]+/g;
 		var match;
-		while(( match = pattern.exec(input)) != null) {
+		while (( match = pattern.exec(input)) != null) {
 			var line = match[0].trim();
 
-			if(line.substr(0, 2) == '#R') {
+			if (line.substr(0, 2) == '#R') {
 				rule = Rules.parseRule(null, line.substr(2));
 			}
-			if(line.substr(0, 2) == '#D') {
+			if (line.substr(0, 2) == '#D') {
 				desc += line.substr(2) + '\n';
 			}
-			if(line.substr(0, 2) == '#P') {
+			if (line.substr(0, 2) == '#P') {
 				var coords = line.split(' ');
-				if(coords.length == 3) {
+				if (coords.length == 3) {
 					x = parseInt(coords[1]);
 					y = parseInt(coords[2]);
 				}
 			}
-			if(line.substr(0, 1) != '#') {
-				for(var dx = 0; dx < line.length; dx++) {
-					if(line.charAt(dx) == '*') {
+			if (line.substr(0, 1) != '#') {
+				for (var dx = 0; dx < line.length; dx++) {
+					if (line.charAt(dx) == '*') {
 						positions.push({
 							x : x + dx,
 							y : y
@@ -44,7 +58,7 @@ var Patterns = {
 			}
 		}
 
-		return new Pattern(positions, rule, desc);
+		return new Pattern(positions, rule, name, desc);
 	},
 
 	loadRLE : function(input, name) {
@@ -54,9 +68,9 @@ var Patterns = {
 
 		var linePattern = /.*[\r\n]+/g;
 		var match;
-		while(( match = linePattern.exec(input)) != null) {
+		while (( match = linePattern.exec(input)) != null) {
 			var line = match[0].trim();
-			if(line[0] != '#' && line[0] != "") {
+			if (line[0] != '#' && line[0] != "") {
 				break;
 			}
 			desc += line.substr(2).trim() + '\n';
@@ -72,9 +86,9 @@ var Patterns = {
 		// sequence
 		var offsetX = x;
 		var runCount = 0;
-		for(var i = linePattern.lastIndex; i < input.length && input[i] != '!'; i++) {
+		for (var i = linePattern.lastIndex; i < input.length && input[i] != '!'; i++) {
 			var ch = input[i];
-			if('\r\n\t'.indexOf(ch) == -1) {
+			if ('\r\n\t'.indexOf(ch) == -1) {
 				switch (ch.toLowerCase()) {
 					case '$':
 						runCount = runCount == 0 ? 1 : runCount;
@@ -89,7 +103,7 @@ var Patterns = {
 						break;
 					case 'o':
 						runCount = runCount == 0 ? 1 : runCount;
-							for(var count = 0; count < runCount; count++) {
+						for (var count = 0; count < runCount; count++) {
 							positions.push(new Position(x++, y));
 						}
 						runCount = 0;
@@ -101,5 +115,4 @@ var Patterns = {
 		}
 		return new Pattern(positions, rule, name, desc);
 	},
-
 }

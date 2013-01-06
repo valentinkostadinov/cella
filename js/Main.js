@@ -253,7 +253,15 @@ $(document).ready(function() {
                 if (path) {
                     $("#pattern").button("option", "label", ui.item.text());
                     $.get(path, function(data) {
-                        Automaton.addPattern(Patterns.loadRLE(data).positions);
+                    	var name = path.slice(path.lastIndexOf('/') + 1);
+
+				        AutomatonManager.halt();
+				        if (!AutomatonManager.pattern) {
+				            AutomatonManager.pattern = Automaton.toPattern();
+				        }
+				        Automaton.clear();
+
+                        Automaton.addPattern(Patterns.load(data, name).positions);
                         Grid.fitPattern();
                         Grid.paint();
                     })
