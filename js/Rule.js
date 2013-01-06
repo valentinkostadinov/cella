@@ -1,5 +1,3 @@
-"use strict";
-
 function Rule(name, survivalSet, birthSet) {
 	var survivalMask = 0;
 	var birthMask = 0;

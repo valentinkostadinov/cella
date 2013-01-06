@@ -1,5 +1,3 @@
-"use strict";
-
 var Grid = {
 
 	/*
@@ -71,7 +69,7 @@ var Grid = {
 		};
 
 		// zooming setup
-		$(document).mousewheel( function(event, delta) {
+		$(canvas).mousewheel( function(event, delta) {
 			me.zoom(delta > 0 ? 1 : -1, event.pageX, event.pageY);
 		});
 

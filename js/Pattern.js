@@ -1,5 +1,3 @@
-"use strict";
-
 function Pattern(positions, rule, name, description) {
 	this.positions = positions;
 	this.rule = rule;
