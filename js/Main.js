@@ -376,4 +376,12 @@ $(document).ready(function() {
         pan(1, 0);
     });
 
+    // just load something on startup for demo purposes
+    $.get('/patterns/Life/Signal-Circuitry/p30-racetrack.rle', function(data) {
+        Automaton.addPattern(Patterns.load(data, 'p30-racetrack.rle').positions);
+        Grid.fitPattern();
+        Grid.paint();
+        AutomatonManager.toggle();
+    })
+
 })
